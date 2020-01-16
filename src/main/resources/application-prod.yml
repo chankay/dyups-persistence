@@ -6,9 +6,9 @@ spring:
   datasource:
     # JDBC 配置
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.31.200.8:3307/dyups?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: dyups
-    password: dyups_2020
+    url: jdbc:mysql://*.*.*.*:3307/dyups?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: **
+    password: **
     # 连接池配置
     druid:
       initial-size: 5
@@ -17,9 +17,9 @@ spring:
       max-wait: 60000
 
 dyups:
-  server: 10.103.61.45;10.103.61.37
+  server: *.*.*.*;*.*.*.*
   remotePath: /ext/dyups/conf.d/
   interfacePath: /upstream/
   interfacePort: 8081
-  user: dyups
-  password: tenginE@2020
+  user: ****
+  password: ****
