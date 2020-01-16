@@ -1,0 +1,25 @@
+
+server:
+  port: 8088
+
+spring:
+  datasource:
+    # JDBC 配置
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://*.*.*.*:4306/dyups?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: **
+    password: ****
+    # 连接池配置
+    druid:
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+
+dyups:
+  server: *.*.*.*;*.*.*.*
+  remotePath: /ext/dyups/conf.d/
+  interfacePath: /upstream/
+  interfacePort: 8083
+  user: **
+  password: ****

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dyups-upstream</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+<div style="padding: 10px;">
+    <button type="button" class="layui-btn" onclick="addConfig()">添加upstream</button>
+    (涉及到监听端口的修改需要手动reload nginx配置后才能生效：添加新配置，删除配置，修改server部分配置)
+    <table lay-filter="config">
+        <thead>
+            <tr>
+                <th lay-data="{field:'name'}">upstream名称</th>
+                <th lay-data="{field:'comment'}">描述</th>
+                <th lay-data="{field:'', width: 200, align:'center', toolbar: '#barDemo'}">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script src="/layui/layui.all.js"></script>
+<script src="/js/jquery-3.4.1.min.js"></script>
+<script>
+    var table = layui.table;
+    //转换静态表格
+    var tableIns = table.init('config', {
+        limit: 10,
+        url: '/api/configList',
+        id: 'configTable'
+
+    });
+
+    table.on('tool(config)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+        if(layEvent === 'detail'){ //查看
+
+        } else if(layEvent === 'del'){ //删除
+            var layerIndex = layer.confirm('确定删除吗？', function(index){
+                delConfig(data.id, layerIndex);
+            });
+        } else if(layEvent === 'edit'){ //编辑
+            updateConfig(data.id);
+        } else if(layEvent === 'LAYTABLE_TIPS'){
+            layer.alert('Hi，头部工具栏扩展的右侧图标。');
+        }
+    });
+
+    function addConfig() {
+        var layerIndex = layer.open({
+            title: '添加upstream',
+            type: 2,
+            area: ['600px','350px'],
+            content: '/configForm?id=0',
+            maxmin: true,
+            btn: ['确定','取消'],
+            yes: function (index, layero) {
+                var name = layero.find('iframe').contents().find('[id="name"]').val();
+                var upstream = layero.find('iframe').contents().find('[id="upstream"]').val();
+                var server = layero.find('iframe').contents().find('[id="server"]').val();
+                var comment = layero.find('iframe').contents().find('[id="comment"]').val();
+                var data = {
+                    'name': name,
+                    'upstream': upstream,
+                    'server': server,
+                    'comment': comment
+                }
+                $.ajax({
+                    //请求方式
+                    type : "POST",
+                    //请求的媒体类型
+                    contentType: "application/json;charset=UTF-8",
+                    //请求地址
+                    url : "/api/config",
+                    //数据，json字符串
+                    data : JSON.stringify(data),
+                    //请求成功
+                    success : function(result) {
+                        console.log(result);
+                        layer.close(layerIndex);
+                        layer.msg(result.message);
+                        table.reload("configTable", {});
+                    },
+                    //请求失败，包含具体的错误信息
+                    error : function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
+                    }
+                });
+            },
+            cancle: function (index, layero) {
+            }
+        });
+    }
+
+    function updateConfig(configId) {
+        var layerIndex = layer.open({
+                title: '修改upstream',
+                type: 2,
+                area: ['600px','350px'],
+                content: '/configForm?id=' + configId,
+                maxmin: true,
+                btn: ['确定','取消'],
+                yes: function (index, layero) {
+                    var id = layero.find('iframe').contents().find('[id="id"]').val();
+                    var name = layero.find('iframe').contents().find('[id="name"]').val();
+                    var upstream = layero.find('iframe').contents().find('[id="upstream"]').val();
+                    var server = layero.find('iframe').contents().find('[id="server"]').val();
+                    var comment = layero.find('iframe').contents().find('[id="comment"]').val();
+
+                    var data = {
+                        'id': id,
+                        'name': name,
+                        'upstream': upstream,
+                        'server': server,
+                        'comment': comment
+                    }
+                    $.ajax({
+                        //请求方式
+                        type : "PUT",
+                        //请求的媒体类型
+                        contentType: "application/json;charset=UTF-8",
+                        //请求地址
+                        url : "/api/config",
+                        //数据，json字符串
+                        data : JSON.stringify(data),
+                        //请求成功
+                        success : function(result) {
+                            console.log(result);
+                            layer.close(layerIndex);
+                            layer.msg(result.message);
+                            table.reload("configTable", {});
+                        },
+                        //请求失败，包含具体的错误信息
+                        error : function(e){
+                            console.log(e.status);
+                            console.log(e.responseText);
+                        }
+                    });
+                },
+                cancle: function (index, layero) {
+                }
+            });
+    }
+    
+    function delConfig(id, layerIndex) {
+        $.ajax({
+            //请求方式
+            type : "DELETE",
+            //请求的媒体类型
+            contentType: "application/json;charset=UTF-8",
+            //请求地址
+            url : "/api/config?id="+id,
+            //请求成功
+            success : function(result) {
+                console.log(result);
+                layer.close(layerIndex);
+                layer.msg(result.message);
+                table.reload("configTable", {});
+            },
+            //请求失败，包含具体的错误信息
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+    }
+    
+
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+</body>
+</html>

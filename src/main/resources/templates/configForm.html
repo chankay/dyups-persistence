@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>upstreamForm</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+    <div style="padding: 10px;">
+    <form class="layui-form" action="">
+        <div style="display: none;">
+            <input id="id" th:value="${config.id}">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input id="name" type="text" th:value="${config.name}" name="name" required  lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">upstream配置</label>
+            <div class="layui-input-block">
+                <textarea id="upstream" name="upstream" required lay-verify="required" placeholder="请输入upstream配置" class="layui-textarea" th:text="${config.upstream}"></textarea>
+<!--                <input id="config" type="text" th:value="${config.config}" name="config"  lay-verify="required" placeholder="请输入配置" autocomplete="off" class="layui-input">-->
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">server配置</label>
+            <div class="layui-input-block">
+                <textarea id="server" name="server" required lay-verify="required" placeholder="请输入server配置" class="layui-textarea" th:text="${config.server}"></textarea>
+                <!--                <input id="config" type="text" th:value="${config.config}" name="config"  lay-verify="required" placeholder="请输入配置" autocomplete="off" class="layui-input">-->
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <input id="comment" type="text" th:value="${config.comment}" name="comment"  lay-verify="required" placeholder="请输入描述" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+    <script></script>
+    <script src="/layui/layui.all.js"></script>
+</body>
+</html>
